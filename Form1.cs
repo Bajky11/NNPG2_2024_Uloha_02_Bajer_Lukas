@@ -1,4 +1,5 @@
 ﻿using NNPG2_2024_Uloha_02_Bajer_Lukas;
+using NNPG2_2024_Uloha_02_Bajer_Lukas.src;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,105 +11,20 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-
 namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 {
-    class CustomObject
-    {
-        public string Name { get; }
-        public Rectangle Rectangle { get; private set; }
-        public Rectangle MagneticRectangle { get; set; }
-        public bool Hovered { get; set; }
-        public bool Selected { get; set; }
-        private const int DefaultSize = 50;
-        private const int DefaultMagneticSize = 30;
-
-        public CustomObject(string name, int x, int y, int width = DefaultSize, int height = DefaultSize)
-        {
-            Name = name;
-            Rectangle = new Rectangle(x, y, width, height);
-            UpdateMagneticRectangle();
-        }
-
-        private void UpdateMagneticRectangle()
-        {
-            MagneticRectangle = new Rectangle(
-                Rectangle.X - DefaultMagneticSize / 2,
-                Rectangle.Y - DefaultMagneticSize / 2,
-                Rectangle.Width + DefaultMagneticSize,
-                Rectangle.Height + DefaultMagneticSize
-            );
-        }
-
-        public void SetRectX(int x)
-        {
-            Rectangle = new Rectangle(x, Rectangle.Y, Rectangle.Width, Rectangle.Height);
-            UpdateMagneticRectangle();
-        }
-
-        public void SetRectY(int y)
-        {
-            Rectangle = new Rectangle(Rectangle.X, y, Rectangle.Width, Rectangle.Height);
-            UpdateMagneticRectangle();
-        }
-
-        public void SetRectXY(int x, int y)
-        {
-            Rectangle = new Rectangle(x, y, Rectangle.Width, Rectangle.Height);
-            UpdateMagneticRectangle();
-        }
-
-        public void Draw(Graphics g)
-        {
-            g.FillEllipse(Brushes.Black, Rectangle);
-            g.DrawEllipse(Pens.Gray, MagneticRectangle);
-            g.DrawString(Name, new Font("Arial", 10), Brushes.White, Rectangle.X + Rectangle.Width / 2, Rectangle.Y + Rectangle.Height / 2);
-
-            if (Selected)
-            {
-                using (Pen pen = new Pen(Color.Red) { DashStyle = System.Drawing.Drawing2D.DashStyle.Dash })
-                {
-                    g.DrawEllipse(pen, Rectangle);
-                }
-            }
-            if (Hovered)
-            {
-                g.DrawEllipse(Pens.Yellow, Rectangle);
-            }
-        }
-    }
-
-    class Edge
-    {
-        public CustomObject Start { get; set; }
-        public CustomObject End { get; set; }
-
-        public Edge(CustomObject start = null, CustomObject end = null)
-        {
-            Start = start;
-            End = end;
-        }
-
-        public bool IsComplete() => Start != null && End != null;
-
-        public void Reset()
-        {
-            Start = null;
-            End = null;
-        }
-    }
-
     public partial class Form1 : Form
     {
-        private List<Edge> edges = new List<Edge>();
-        private List<CustomObject> objects = new List<CustomObject>();
+        private GraphNNPG2Extension graph = new GraphNNPG2Extension();
+        private List<EdgeData> edges = new List<EdgeData>();
+        private List<VertexData> objects = new List<VertexData>();
         private bool isDragging = false;
         private Point lastMousePosition;
         private Point mousePosition;
-        private Point edgeEndPosition;
-        private CustomObject hoveredObject = null;
-        private CustomObject newObject = null;
-        private Edge edge = new Edge();
+        private VertexData hoveredObject = null;
+        private VertexData magneticObject = null;
+        private VertexData newObject = null;
+        private EdgeData edge = new EdgeData();
         private string mode = "view";
 
         public Form1()
@@ -134,7 +50,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void AddNewObject()
         {
             SetMode("add");
-            newObject = new CustomObject("temp", mousePosition.X, mousePosition.Y);
+            newObject = new VertexData("temp", mousePosition.X, mousePosition.Y);
         }
 
         private void SetMode(string mode)
@@ -164,9 +80,13 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void Form1_Load(object sender, EventArgs e)
         {
             lastMousePosition = Point.Empty;
-            objects.Add(new CustomObject("1", 50, 50));
-            objects.Add(new CustomObject("2", 150, 150));
-            objects.Add(new CustomObject("3", 250, 250));
+            objects.Add(new VertexData("1", 50, 50));
+            objects.Add(new VertexData("2", 150, 150));
+            objects.Add(new VertexData("3", 250, 250));
+            graph.AddVertex(new VertexData("GV1", 100, 200));
+            graph.AddVertex(new VertexData("GV2", 200, 200));
+            graph.AddEdge(0, 1, new EdgeData());
+          
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
@@ -184,22 +104,25 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             if (hoveredObject != null)
             {
-
                 if (edge.Start == null)
                 {
                     edge.Start = hoveredObject;
                 }
-                else
-                {
-                    edge.End = hoveredObject;
-                }
+            }
 
-                if (edge.IsComplete())
+            if (magneticObject != null && magneticObject != edge.Start)
+            {
+                if (edge.Start != null)
                 {
-                    edges.Add(new Edge(edge.Start, edge.End));
-                    edge.Reset();
-                    this.Invalidate();
+                    edge.End = magneticObject;
                 }
+            }
+
+            if (edge.IsComplete())
+            {
+                edges.Add(new EdgeData(edge.Start, edge.End));
+                edge.Reset();
+                this.Invalidate();
             }
         }
 
@@ -217,17 +140,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             isDragging = true;
             lastMousePosition = e.Location;
-        }
-
-        private void OnDrag(MouseEventArgs e)
-        {
-            switch (e.Button)
-            {
-                case MouseButtons.Left: OnDragButtonLeft(e); break;
-                case MouseButtons.Middle: OnDragButtonMiddle(e); break;
-                case MouseButtons.Right: OnDragButtonRight(e); break;
-            }
-            this.Invalidate();
         }
 
         private void OnPaint(object sender, PaintEventArgs e)
@@ -248,34 +160,34 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             {
                 g.DrawLine(
                     new Pen(Color.Black, 3),
-                    new Point(
-                        edge.Start.Rectangle.X + edge.Start.Rectangle.Width / 2,
-                        edge.Start.Rectangle.Y + edge.Start.Rectangle.Height / 2
-                        ),
-                    new Point(
-                        edge.End.Rectangle.X + edge.End.Rectangle.Width / 2,
-                        edge.End.Rectangle.Y + edge.End.Rectangle.Width / 2
-                        )
+                    new Point(edge.Start.GetCenterX(), edge.Start.GetCenterY()),
+                    new Point(edge.End.GetCenterX(), edge.End.GetCenterY())
                     );
             }
 
             if (edge.Start != null)
             {
+                Point endEdgePoint = mousePosition;
+                if (magneticObject != null)
+                {
+                    endEdgePoint = new Point(magneticObject.GetCenterX(), magneticObject.GetCenterY());
+                }
+
                 g.DrawLine(
                     new Pen(Color.Blue),
-                    new Point(
-                        edge.Start.Rectangle.X + edge.Start.Rectangle.Width / 2,
-                        edge.Start.Rectangle.Y + edge.Start.Rectangle.Width / 2
-                        ),
-                    new Point(edgeEndPosition.X, edgeEndPosition.Y)
-                );
+                    new Point(edge.Start.GetCenterX(), edge.Start.GetCenterY()),
+                    new Point(endEdgePoint.X, endEdgePoint.Y)
+                    );
             }
+            graph.Draw(g);
         }
+
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
             mousePosition = e.Location;
-            edgeEndPosition = e.Location;
+            bool foundMagnetic = false;
+            bool foundRectangle = false;
 
             if (mode == "view" && isDragging)
             {
@@ -287,6 +199,8 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 {
                     if (obj.Rectangle.Contains(mousePosition))
                     {
+                        foundRectangle = true;
+
                         if (hoveredObject != obj)
                         {
                             hoveredObject = obj;
@@ -295,22 +209,38 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                             break;
                         }
                     }
-                    else
+
+                    if (obj.MagneticRectangle.Contains(mousePosition))
                     {
-                        if (hoveredObject == obj)
+                        foundMagnetic = true;
+
+                        if (magneticObject != obj)
                         {
-                            hoveredObject.Hovered = false;
-                            hoveredObject = null;
+                            magneticObject = obj;
                             this.Invalidate();
+                            break;
                         }
                     }
+                }
 
+                if (!foundMagnetic && magneticObject != null)
+                {
+                    Console.WriteLine("Err");
+                    magneticObject = null;
+                    this.Invalidate();
+                }
+
+                if (!foundRectangle && hoveredObject != null)
+                {
+                    hoveredObject.Hovered = false;
+                    hoveredObject = null;
+                    this.Invalidate();
                 }
             }
 
             if (mode == "add")
             {
-                newObject = new CustomObject("temp", mousePosition.X, mousePosition.Y);
+                newObject = new VertexData("temp", mousePosition.X, mousePosition.Y);
                 this.Invalidate();
             }
 
@@ -320,7 +250,16 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             }
         }
 
-
+        private void OnDrag(MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left: OnDragButtonLeft(e); break;
+                case MouseButtons.Middle: OnDragButtonMiddle(e); break;
+                case MouseButtons.Right: OnDragButtonRight(e); break;
+            }
+            this.Invalidate();
+        }
 
         private void OnDragButtonLeft(MouseEventArgs e)
         {

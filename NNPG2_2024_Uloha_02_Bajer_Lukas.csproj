@@ -46,12 +46,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs" />
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\SEMA\GraphRailwayExtension.cs" />
+    <Compile Include="src\DataStucture\GenericGraph\Edge.cs" />
+    <Compile Include="src\DataStucture\GenericGraph\Graph.cs" />
+    <Compile Include="src\DataStucture\GenericGraph\IGenericGraph.cs" />
+    <Compile Include="src\NNPG2\EdgeData.cs" />
+    <Compile Include="src\NNPG2\VertexData.cs" />
+    <Compile Include="src\NNPG2\GraphNNPG2Extension.cs" />
+    <Compile Include="src\DataStucture\GenericGraph\Vertex.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
