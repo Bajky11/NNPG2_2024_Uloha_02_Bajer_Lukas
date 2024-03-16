@@ -1,5 +1,6 @@
 ﻿using NNPG2_2024_Uloha_02_Bajer_Lukas;
 using NNPG2_2024_Uloha_02_Bajer_Lukas.src;
+using NNPG2_2024_Uloha_02_Bajer_Lukas.src.NNPG2;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,15 +18,16 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
     {
         private GraphNNPG2Extension graph = new GraphNNPG2Extension();
         private List<EdgeData> edges = new List<EdgeData>();
-        private List<VertexData> objects = new List<VertexData>();
         private bool isDragging = false;
         private Point lastMousePosition;
         private Point mousePosition;
-        private VertexData hoveredObject = null;
-        private VertexData magneticObject = null;
-        private VertexData newObject = null;
-        private EdgeData edge = new EdgeData();
+        private VertexNNPG2 hoveredObject = null;
+        private VertexNNPG2 magneticObject = null;
+        private VertexNNPG2 newObject = null;
+        private EdgeNNPG2 edge = null;
         private string mode = "view";
+
+        private int keyCounter = 0;
 
         public Form1()
         {
@@ -50,7 +52,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void AddNewObject()
         {
             SetMode("add");
-            newObject = new VertexData("temp", mousePosition.X, mousePosition.Y);
+            newObject = new VertexNNPG2(keyCounter++, new VertexData("new", mousePosition.X, mousePosition.Y));
         }
 
         private void SetMode(string mode)
@@ -66,7 +68,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 
         private void ResetEdgeCreation()
         {
-            edge.Reset();
+            edge = null;
             this.Invalidate();
         }
 
@@ -80,13 +82,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void Form1_Load(object sender, EventArgs e)
         {
             lastMousePosition = Point.Empty;
-            objects.Add(new VertexData("1", 50, 50));
-            objects.Add(new VertexData("2", 150, 150));
-            objects.Add(new VertexData("3", 250, 250));
-            graph.AddVertex(new VertexData("GV1", 100, 200));
-            graph.AddVertex(new VertexData("GV2", 200, 200));
-            graph.AddEdge(0, 1, new EdgeData());
-          
+            graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V1", 100, 200)));
+            graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V2", 150, 200)));
+
+            graph.AddEdge(0, 1, new EdgeData("edge from 0 to 1"));
+
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)
@@ -104,24 +104,30 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             if (hoveredObject != null)
             {
-                if (edge.Start == null)
+                if (edge == null)
                 {
-                    edge.Start = hoveredObject;
+
+                    // edge is null or start vertex is different - set edge and start vertex
+                    edge = new EdgeNNPG2(new VertexNNPG2(hoveredObject._Key, hoveredObject.Data), null, new EdgeData(""));
                 }
             }
 
-            if (magneticObject != null && magneticObject != edge.Start)
+            if (magneticObject != null)
             {
-                if (edge.Start != null)
+                if (edge != null && magneticObject._Key != edge.StartVertex._Key)
                 {
-                    edge.End = magneticObject;
+                    if (edge.StartVertex != null)
+                    {
+                        edge.EndVertex = new VertexNNPG2(magneticObject._Key, magneticObject.Data);
+                    }
                 }
             }
 
-            if (edge.IsComplete())
+            if (edge != null && edge.IsComplete())
             {
-                edges.Add(new EdgeData(edge.Start, edge.End));
-                edge.Reset();
+                Console.WriteLine("created");
+                graph.AddEdge(edge.StartVertex._Key, edge.EndVertex._Key, new EdgeData("edge from" + edge.StartVertex._Key + " to " + edge.EndVertex._Key));
+                this.edge = null;
                 this.Invalidate();
             }
         }
@@ -130,7 +136,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             if (mode == "add")
             {
-                objects.Add(newObject);
+                graph.AddVertex(newObject);
                 newObject = null;
                 SetMode("view");
             }
@@ -146,16 +152,14 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             Graphics g = e.Graphics;
 
+            graph.Draw(g);
+
             if (mode == "add")
             {
-                newObject.Draw(g);
+                newObject.Data.Draw(g);
             }
 
-            foreach (var obj in objects)
-            {
-                obj.Draw(g);
-            }
-
+            /*
             foreach (var edge in edges)
             {
                 g.DrawLine(
@@ -164,22 +168,22 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                     new Point(edge.End.GetCenterX(), edge.End.GetCenterY())
                     );
             }
+            */
 
-            if (edge.Start != null)
+            if (edge != null && edge.StartVertex != null)
             {
                 Point endEdgePoint = mousePosition;
                 if (magneticObject != null)
                 {
-                    endEdgePoint = new Point(magneticObject.GetCenterX(), magneticObject.GetCenterY());
+                    endEdgePoint = new Point(magneticObject.Data.GetCenterX(), magneticObject.Data.GetCenterY());
                 }
 
                 g.DrawLine(
                     new Pen(Color.Blue),
-                    new Point(edge.Start.GetCenterX(), edge.Start.GetCenterY()),
+                    new Point(edge.StartVertex.Data.GetCenterX(), edge.StartVertex.Data.GetCenterY()),
                     new Point(endEdgePoint.X, endEdgePoint.Y)
                     );
             }
-            graph.Draw(g);
         }
 
 
@@ -195,44 +199,83 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             }
             else
             {
-                foreach (var obj in objects)
+                foreach (var obj in graph)
                 {
-                    if (obj.Rectangle.Contains(mousePosition))
+                    var vertexData = obj.Value.Data;
+                    var vertex = obj.Value;
+
+                    if (vertexData.Rectangle.Contains(mousePosition))
                     {
                         foundRectangle = true;
 
-                        if (hoveredObject != obj)
+                        if (hoveredObject == null)
                         {
-                            hoveredObject = obj;
-                            hoveredObject.Hovered = true;
+                            // vertex je null - nastva hover object
+                            hoveredObject = new VertexNNPG2(vertex._Key, vertexData);
+                            hoveredObject.Data.Hovered = true;
                             this.Invalidate();
                             break;
                         }
+                        else if (hoveredObject.Data != vertexData)
+                        {
+                            // vertex je jiný než hover object - přenastav hover objekt
+                            hoveredObject.Data.Hovered = true;
+                            this.Invalidate();
+                            break;
+                        }
+                        else
+                        {
+                            // vertex je stejný jako aktuálně nastavený hover objekt - žadná akce
+                        }
                     }
 
-                    if (obj.MagneticRectangle.Contains(mousePosition))
+                    if (vertexData.MagneticRectangle.Contains(mousePosition))
                     {
                         foundMagnetic = true;
 
-                        if (magneticObject != obj)
+                        if (magneticObject == null)
                         {
-                            magneticObject = obj;
+                            // vertex je null - nastav magnetic object
+                            magneticObject = new VertexNNPG2(vertex._Key, vertexData);
+                            this.Invalidate();
+                            break;
+
+                        }
+                        else if (magneticObject.Data != vertexData)
+                        {
+                            // vertex je jiný než magnetic object - přenastav magnetic objekt
+                            magneticObject = new VertexNNPG2(vertex._Key, vertexData);
                             this.Invalidate();
                             break;
                         }
+                        else
+                        {
+                            // vertex je stejný jako aktuálně nastavený magnetic objekt - žadná akce
+                        }
                     }
                 }
+                if (magneticObject != null)
+                {
+                    Console.WriteLine("magnetic " + magneticObject.ToString());
+                }
+
+                if (hoveredObject != null)
+                {
+                    Console.WriteLine("hover " + hoveredObject.ToString());
+                }
+
+
 
                 if (!foundMagnetic && magneticObject != null)
                 {
-                    Console.WriteLine("Err");
+                    //Console.WriteLine("Err");
                     magneticObject = null;
                     this.Invalidate();
                 }
 
                 if (!foundRectangle && hoveredObject != null)
                 {
-                    hoveredObject.Hovered = false;
+                    hoveredObject.Data.Hovered = false;
                     hoveredObject = null;
                     this.Invalidate();
                 }
@@ -240,11 +283,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 
             if (mode == "add")
             {
-                newObject = new VertexData("temp", mousePosition.X, mousePosition.Y);
+                newObject.Data.SetRectXY(mousePosition.X, mousePosition.Y);
                 this.Invalidate();
             }
 
-            if (edge.Start != null)
+            if (edge != null && edge.StartVertex != null)
             {
                 this.Invalidate();
             }
@@ -268,10 +311,10 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 int deltaX = e.X - lastMousePosition.X;
                 int deltaY = e.Y - lastMousePosition.Y;
 
-                int newX = hoveredObject.Rectangle.X + deltaX;
-                int newY = hoveredObject.Rectangle.Y + deltaY;
+                int newX = hoveredObject.Data.Rectangle.X + deltaX;
+                int newY = hoveredObject.Data.Rectangle.Y + deltaY;
 
-                hoveredObject.SetRectXY(newX, newY);
+                hoveredObject.Data.SetRectXY(newX, newY);
 
                 lastMousePosition = e.Location;
 
@@ -283,14 +326,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             int deltaX = e.X - lastMousePosition.X;
             int deltaY = e.Y - lastMousePosition.Y;
 
-            foreach (var obj in objects)
-            {
-
-                int newX = obj.Rectangle.X + deltaX;
-                int newY = obj.Rectangle.Y + deltaY;
-                obj.SetRectXY(newX, newY);
-
-            }
+            graph.UpdateCoordinates(deltaX, deltaY);
 
             lastMousePosition = e.Location;
         }

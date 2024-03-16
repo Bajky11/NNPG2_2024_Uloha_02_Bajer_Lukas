@@ -8,8 +8,8 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
 {
     internal class Edge<Key, VertexData, EdgeData>
     {
-        public Vertex<Key, VertexData, EdgeData> StartVertex { get; }
-        public Vertex<Key, VertexData, EdgeData> EndVertex { get; }
+        public Vertex<Key, VertexData, EdgeData> StartVertex { get; set; }
+        public Vertex<Key, VertexData, EdgeData> EndVertex { get; set; }
         public EdgeData Data { get; }
 
         public Edge(Vertex<Key, VertexData, EdgeData> startVertex, Vertex<Key, VertexData, EdgeData> endVertex, EdgeData data)
@@ -17,6 +17,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             StartVertex = startVertex;
             EndVertex = endVertex;
             Data = data;
+        }
+
+        public override string ToString()
+        {
+            return "Edge from " + StartVertex._Key + " to " + EndVertex._Key;
         }
     }
 }

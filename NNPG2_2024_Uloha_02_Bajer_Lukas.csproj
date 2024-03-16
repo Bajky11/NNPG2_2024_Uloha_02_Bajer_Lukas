@@ -57,6 +57,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\NNPG2\EdgeNNPG2.cs" />
+    <Compile Include="src\NNPG2\Map.cs" />
+    <Compile Include="src\NNPG2\VertexNNPG2.cs" />
     <Compile Include="src\SEMA\GraphRailwayExtension.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Edge.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Graph.cs" />
@@ -90,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="src\NNPG2\Resources\czechrepublic.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

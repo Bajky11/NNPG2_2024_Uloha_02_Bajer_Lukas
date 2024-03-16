@@ -9,7 +9,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
     internal class Vertex<Key, VertexData, EdgeData>
     {
         public Key _Key { get; }
-        public VertexData Data { get; }
+        public VertexData Data { get; set; }
         public List<Edge<Key, VertexData, EdgeData>> Edges { get; }
         public List<Vertex<Key, VertexData, EdgeData>> Neighbors { get; }
 
@@ -34,6 +34,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         {
             Edges.RemoveAll(edge => edge.EndVertex.Equals(toVertex));
             Neighbors.Remove(toVertex);
+        }
+
+        public override string ToString()
+        {
+            return "Vertex " + _Key;
         }
     }
 }

@@ -40,17 +40,40 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         [STAThread]
         static void Main()
         {
+            /*
             // Create an instance of GraphExtension
             GraphRailwayExtension<int, string, int> graphExtension = new GraphRailwayExtension<int, string, int>();
             graphExtension.Load("GraphSaveTest.txt");
 
-            
+            // Add vertices and edges
+            graphExtension.AddVertex(1, "Vertex 1");
+            graphExtension.AddVertex(2, "Vertex 2");
+            graphExtension.AddVertex(3, "Vertex 3");
+            graphExtension.AddEdge(1, 2, 10);
+            graphExtension.AddEdge(2, 3, 20);
+            graphExtension.AddEdge(3, 1, 30);
 
+            // Find all paths between start and end vertices
+            int[] startVertices = { 1 };
+            int[] endVertices = { 3 };
+            var allPaths = graphExtension.FindAllPathsBetweenStartAndEndVertexes(startVertices, endVertices);
+
+            // Print all paths
+            foreach (var path in allPaths)
+            {
+                Console.WriteLine("Path:");
+                foreach (var vertexKey in path)
+                {
+                    Console.WriteLine(vertexKey);
+                }
+            }
+            Console.WriteLine(graphExtension.ToString());
             graphExtension.Save("GraphSaveTest.txt");
+            */
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
+            Application.Run(new Form1());
         }
     }
 }
