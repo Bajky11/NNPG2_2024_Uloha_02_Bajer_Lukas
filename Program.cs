@@ -40,18 +40,15 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         [STAThread]
         static void Main()
         {
-            /*
+
             // Create an instance of GraphExtension
-            GraphRailwayExtension<int, string, int> graphExtension = new GraphRailwayExtension<int, string, int>();
-            graphExtension.Load("GraphSaveTest.txt");
+            GraphRailwayExtension<int, string, string> graphExtension = new GraphRailwayExtension<int, string, string>();
+            //graphExtension.Load("GraphSaveTest.txt");
 
             // Add vertices and edges
             graphExtension.AddVertex(1, "Vertex 1");
             graphExtension.AddVertex(2, "Vertex 2");
-            graphExtension.AddVertex(3, "Vertex 3");
-            graphExtension.AddEdge(1, 2, 10);
-            graphExtension.AddEdge(2, 3, 20);
-            graphExtension.AddEdge(3, 1, 30);
+            graphExtension.AddEdge(1, 2, "1 - 2");
 
             // Find all paths between start and end vertices
             int[] startVertices = { 1 };
@@ -67,13 +64,20 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                     Console.WriteLine(vertexKey);
                 }
             }
+
             Console.WriteLine(graphExtension.ToString());
             graphExtension.Save("GraphSaveTest.txt");
-            */
 
+            
+            Console.WriteLine();
+
+            GraphRailwayExtension<int, string, string> graph = new GraphRailwayExtension<int, string, string>();
+            graph.Load("GraphSaveTest.txt");
+            Console.WriteLine(graph.ToString());
+            
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            //Application.Run(new Form1());
         }
     }
 }

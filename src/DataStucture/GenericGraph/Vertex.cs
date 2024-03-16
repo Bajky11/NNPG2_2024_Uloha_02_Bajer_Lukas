@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
 {
@@ -39,6 +41,18 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         public override string ToString()
         {
             return "Vertex " + _Key;
+        }
+
+        public string Serialize()
+        {
+            Tuple<Key, VertexData> obj = new Tuple<Key, VertexData>(_Key, Data);
+            string json = JsonConvert.SerializeObject(obj);
+            return "vertex" + "\t" + json;
+        }
+
+        public static Tuple<Key, VertexData> Deserialize(string jsonString)
+        {
+            return JsonConvert.DeserializeObject<Tuple<Key, VertexData>>(jsonString);
         }
     }
 }

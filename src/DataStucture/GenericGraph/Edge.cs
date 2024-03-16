@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,19 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         public override string ToString()
         {
             return "Edge from " + StartVertex._Key + " to " + EndVertex._Key;
+        }
+
+        public string Serialize()
+        {
+            Tuple<Key, Key> vertexKeys = new Tuple<Key, Key>(StartVertex._Key, EndVertex._Key);
+            Tuple<Tuple<Key, Key>, EdgeData> obj = new Tuple<Tuple<Key, Key>, EdgeData>(vertexKeys, Data);
+            string json = JsonConvert.SerializeObject(obj);
+            return "edge" + "\t" + json;
+        }
+
+        public static Tuple<Tuple<Key, Key>, EdgeData> Deserialize(string jsonString)
+        {
+            return JsonConvert.DeserializeObject<Tuple<Tuple<Key, Key>, EdgeData>>(jsonString);
         }
     }
 }

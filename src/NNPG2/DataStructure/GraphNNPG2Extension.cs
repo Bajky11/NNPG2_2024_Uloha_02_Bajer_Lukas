@@ -15,13 +15,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
 {
     internal class GraphNNPG2Extension : GraphRailwayExtension<int, VertexData, EdgeData>
     {
-        private int VertexKeysCounter;
-
-
-        public GraphNNPG2Extension()
-        {
-            VertexKeysCounter = 0;
-        }
 
         public void AddVertex(VertexNNPG2 vertex)
         {
