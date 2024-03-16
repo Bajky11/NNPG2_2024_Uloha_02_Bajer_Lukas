@@ -29,7 +29,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         public void AddVertex(Key key, VertexData data)
         {
             if (adjencyList.ContainsKey(key))
-                throw new InvalidOperationException("Vertex already exists.");
+                 throw new InvalidOperationException("Vertex already exists.");
             adjencyList[key] = new Vertex<Key, VertexData, EdgeData>(key, data);
         }
 
@@ -94,7 +94,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             return GetEnumerator();
         }
 
-        public void Save(string filePath)
+        public virtual void Save(string filePath)
         {
             StringBuilder vertexesStringBuilder = new StringBuilder();
             StringBuilder edgesStringBuilder = new StringBuilder();
@@ -114,7 +114,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             File.WriteAllText(filePath, finalString);
         }
 
-        public void Load(string filePath)
+        public virtual void Load(string filePath)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException("File not found.", filePath);

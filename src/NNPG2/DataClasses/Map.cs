@@ -3,8 +3,8 @@
 internal class Map
 {
     private Image image;
-    private Point coordinates;
-    private float scale = 1.0f; // Initial scale
+    public Point coordinates;
+    
 
     public Map(string path, int x, int y)
     {
@@ -20,15 +20,10 @@ internal class Map
         coordinates.Y = newY;
     }
 
-    public void Zoom(float scaleFactor)
-    {
-        scale *= scaleFactor;
-    }
-
     public void Draw(Graphics g)
     {
-        int width = (int)(image.Width * scale);
-        int height = (int)(image.Height * scale);
+        int width = image.Width;
+        int height = image.Height;
         Rectangle destinationRect = new Rectangle(coordinates.X, coordinates.Y, width, height);
         g.DrawImage(image, destinationRect);
     }

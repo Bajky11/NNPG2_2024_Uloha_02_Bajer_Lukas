@@ -40,7 +40,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         [STAThread]
         static void Main()
         {
-
+            /*
             // Create an instance of GraphExtension
             GraphRailwayExtension<int, string, string> graphExtension = new GraphRailwayExtension<int, string, string>();
             //graphExtension.Load("GraphSaveTest.txt");
@@ -74,10 +74,10 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             GraphRailwayExtension<int, string, string> graph = new GraphRailwayExtension<int, string, string>();
             graph.Load("GraphSaveTest.txt");
             Console.WriteLine(graph.ToString());
-            
+            */
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //Application.Run(new Form1());
+            Application.Run(new Form1());
         }
     }
 }

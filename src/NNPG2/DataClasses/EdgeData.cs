@@ -13,5 +13,10 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         {
             Data = data;
         }
+
+        public override string ToString()
+        {
+            return this.Data;
+        }
     }
 }

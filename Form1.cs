@@ -28,7 +28,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private string mode = "view";
         private Map _Map;
 
-        private int keyCounter = 0;
+        private int keyCounter;
 
         public Form1()
         {
@@ -39,17 +39,48 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             this.MouseDown += OnMouseDown;
             this.MouseUp += OnMouseUp;
             this.KeyPress += OnKeyPress;
+
+            
+
+            // Create a new button
+            Button myButton = new Button();
+
+            // Set button properties
+            myButton.Text = "Click Me";
+            myButton.Size = new Size(100, 50); // Set the size as needed
+            myButton.Location = new Point(10, 10); // Set the location as needed
+
+            // Add click event handler for the button
+            myButton.Click += (sender, e) =>
+            {
+                MessageBox.Show("Button Clicked!");
+            };
+
+            //Add the button to the form
+            //this.Controls.Add(myButton);
+
         }
 
-        
-        
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
+            Console.WriteLine(e.KeyChar);
             switch (e.KeyChar)
             {
                 case (char)Keys.Escape: Reset(); break;
                 case 'a': AddNewObject(); break;
+                case 's': graph.Save("NNPG2.txt", _Map); break;
+                case 'd': DeleteObject(); break;
+            }
+        }
+
+        private void DeleteObject()
+        {
+            if (hoveredObject != null)
+            {
+                graph.RemoveVertex(hoveredObject._Key);
+                hoveredObject = null;
+                this.Invalidate();
             }
         }
 
@@ -86,10 +117,9 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void Form1_Load(object sender, EventArgs e)
         {
             lastMousePosition = Point.Empty;
-            graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V1", 100, 200)));
-            graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V2", 300, 200)));
-            graph.AddEdge(0, 1, new EdgeData("edge from 0 to 1"));
-            _Map = new Map("C:\\Users\\LuBajer\\Documents\\LukasBajer\\Projects\\NNPG2_2024_Uloha_02_Bajer_Lukas\\src\\NNPG2\\Resources\\czechrepublic.png", 0, 0);
+            Point mapInitialCoordinates = graph.Load("NNPG2.txt");
+            _Map = new Map("C:\\Users\\LuBajer\\Documents\\LukasBajer\\Projects\\NNPG2_2024_Uloha_02_Bajer_Lukas\\src\\NNPG2\\Resources\\czechrepublic.png", mapInitialCoordinates.X, mapInitialCoordinates.Y);
+            keyCounter = graph.GetfirstValidKey();
 
 
         }
@@ -130,7 +160,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 
             if (edge != null && edge.IsComplete())
             {
-                Console.WriteLine("created");
                 graph.AddEdge(edge.StartVertex._Key, edge.EndVertex._Key, new EdgeData("edge from" + edge.StartVertex._Key + " to " + edge.EndVertex._Key));
                 this.edge = null;
                 this.Invalidate();
@@ -202,7 +231,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                     var vertexData = obj.Value.Data;
                     var vertex = obj.Value;
 
-                    if (vertexData.Rectangle.Contains(mousePosition))
+                    if (vertexData.RectangleContains(mousePosition))
                     {
                         foundRectangle = true;
 
@@ -210,14 +239,14 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                         {
                             // vertex je null - nastva hover object
                             hoveredObject = new VertexNNPG2(vertex._Key, vertexData);
-                            hoveredObject.Data.Hovered = true;
+                            hoveredObject.Data.SetHovered(true);
                             this.Invalidate();
                             break;
                         }
                         else if (hoveredObject.Data != vertexData)
                         {
                             // vertex je jiný než hover object - přenastav hover objekt
-                            hoveredObject.Data.Hovered = true;
+                            hoveredObject.Data.SetHovered(true);
                             this.Invalidate();
                             break;
                         }
@@ -227,7 +256,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                         }
                     }
 
-                    if (vertexData.MagneticRectangle.Contains(mousePosition))
+                    if (vertexData.MagneticRectangleContains(mousePosition))
                     {
                         foundMagnetic = true;
 
@@ -252,15 +281,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                         }
                     }
                 }
-                if (magneticObject != null)
-                {
-                    Console.WriteLine("magnetic " + magneticObject.ToString());
-                }
 
-                if (hoveredObject != null)
-                {
-                    Console.WriteLine("hover " + hoveredObject.ToString());
-                }
 
 
 
@@ -273,7 +294,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 
                 if (!foundRectangle && hoveredObject != null)
                 {
-                    hoveredObject.Data.Hovered = false;
+                    hoveredObject.Data.SetHovered(false);
                     hoveredObject = null;
                     this.Invalidate();
                 }
@@ -309,8 +330,8 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 int deltaX = e.X - lastMousePosition.X;
                 int deltaY = e.Y - lastMousePosition.Y;
 
-                int newX = hoveredObject.Data.Rectangle.X + deltaX;
-                int newY = hoveredObject.Data.Rectangle.Y + deltaY;
+                int newX = hoveredObject.Data.GetX() + deltaX;
+                int newY = hoveredObject.Data.GetY() + deltaY;
 
                 hoveredObject.Data.SetRectXY(newX, newY);
 

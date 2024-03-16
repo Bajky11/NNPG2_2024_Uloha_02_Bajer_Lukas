@@ -4,6 +4,7 @@ using NNPG2_2024_Uloha_02_Bajer_Lukas.src.NNPG2;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,14 +27,30 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             UpdateGraphCoordinates(deltaX, deltaY);
         }
 
+        public int GetfirstValidKey()
+        {
+            List<int> keys = new List<int>();
+
+            foreach (var kvp in this)
+            {
+                keys.Add(kvp.Value._Key);
+            }
+            if(keys.Count() == 0)
+            {
+                return 1;
+            }
+            return keys.Max() + 1;
+
+        }
+
         private void UpdateGraphCoordinates(int deltaX, int deltaY)
         {
             foreach (var obj in this)
             {
                 var vertex = obj.Value.Data;
 
-                int newX = vertex.Rectangle.X + deltaX;
-                int newY = vertex.Rectangle.Y + deltaY;
+                int newX = vertex.GetX() + deltaX;
+                int newY = vertex.GetY() + deltaY;
                 vertex.SetRectXY(newX, newY);
 
                 foreach (var edge in obj.Value.Edges)
@@ -41,6 +58,22 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
                     // update Edges
                 }
             }
+        }
+
+        public void Save(string filePath, Map map)
+        {
+            string mapSettingsFileName = filePath.Split('.')[0] + "_mapSettings" + "." + filePath.Split('.')[1];
+            File.WriteAllText(mapSettingsFileName, map.coordinates.X + "\t" + map.coordinates.Y);
+            base.Save(filePath);
+        }
+
+        public new Point Load(string filePath)
+        {
+            string mapSettingsFileName = filePath.Split('.')[0] + "_mapSettings" + "." + filePath.Split('.')[1];
+            string text = File.ReadAllText(mapSettingsFileName);
+            string[] splitText = text.Split('\t');
+            base.Load(filePath);
+            return new Point(int.Parse(splitText[0]), int.Parse(splitText[1]));
         }
 
         public void Draw(Graphics g)
