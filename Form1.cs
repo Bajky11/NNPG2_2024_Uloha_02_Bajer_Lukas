@@ -26,6 +26,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private VertexNNPG2 newObject = null;
         private EdgeNNPG2 edge = null;
         private string mode = "view";
+        private Map _Map;
 
         private int keyCounter = 0;
 
@@ -39,6 +40,9 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             this.MouseUp += OnMouseUp;
             this.KeyPress += OnKeyPress;
         }
+
+        
+        
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
@@ -83,9 +87,10 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             lastMousePosition = Point.Empty;
             graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V1", 100, 200)));
-            graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V2", 150, 200)));
-
+            graph.AddVertex(new VertexNNPG2(keyCounter++, new VertexData("V2", 300, 200)));
             graph.AddEdge(0, 1, new EdgeData("edge from 0 to 1"));
+            _Map = new Map("C:\\Users\\LuBajer\\Documents\\LukasBajer\\Projects\\NNPG2_2024_Uloha_02_Bajer_Lukas\\src\\NNPG2\\Resources\\czechrepublic.png", 0, 0);
+
 
         }
 
@@ -152,6 +157,8 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             Graphics g = e.Graphics;
 
+
+            _Map.Draw(g);
             graph.Draw(g);
 
             if (mode == "add")
@@ -159,16 +166,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 newObject.Data.Draw(g);
             }
 
-            /*
-            foreach (var edge in edges)
-            {
-                g.DrawLine(
-                    new Pen(Color.Black, 3),
-                    new Point(edge.Start.GetCenterX(), edge.Start.GetCenterY()),
-                    new Point(edge.End.GetCenterX(), edge.End.GetCenterY())
-                    );
-            }
-            */
+
 
             if (edge != null && edge.StartVertex != null)
             {
@@ -327,6 +325,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             int deltaY = e.Y - lastMousePosition.Y;
 
             graph.UpdateCoordinates(deltaX, deltaY);
+            _Map.UpdateCoordinates(deltaX, deltaY);
 
             lastMousePosition = e.Location;
         }

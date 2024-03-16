@@ -16,12 +16,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
     internal class GraphNNPG2Extension : GraphRailwayExtension<int, VertexData, EdgeData>
     {
         private int VertexKeysCounter;
-        private Map _Map;
+
 
         public GraphNNPG2Extension()
         {
             VertexKeysCounter = 0;
-            _Map = new Map("C:\\Users\\LuBajer\\Documents\\LukasBajer\\Projects\\NNPG2_2024_Uloha_02_Bajer_Lukas\\src\\NNPG2\\Resources\\czechrepublic.png", 0, 0);
         }
 
         public void AddVertex(VertexNNPG2 vertex)
@@ -31,7 +30,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
 
         public void UpdateCoordinates(int deltaX, int deltaY)
         {
-            _Map.UpdateCoordinates(deltaX, deltaY);
             UpdateGraphCoordinates(deltaX, deltaY);
         }
 
@@ -53,12 +51,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         }
 
         public void Draw(Graphics g)
-        {
-            _Map.Draw(g);
-            DrawGraph(g);
-        }
-
-        private void DrawGraph(Graphics g)
         {
             foreach (var kvp in this)
             {

@@ -57,16 +57,16 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\NNPG2\EdgeNNPG2.cs" />
-    <Compile Include="src\NNPG2\Map.cs" />
-    <Compile Include="src\NNPG2\VertexNNPG2.cs" />
+    <Compile Include="src\NNPG2\DataStructure\EdgeNNPG2.cs" />
+    <Compile Include="src\NNPG2\DataClasses\Map.cs" />
+    <Compile Include="src\NNPG2\DataStructure\VertexNNPG2.cs" />
     <Compile Include="src\SEMA\GraphRailwayExtension.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Edge.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Graph.cs" />
     <Compile Include="src\DataStucture\GenericGraph\IGenericGraph.cs" />
-    <Compile Include="src\NNPG2\EdgeData.cs" />
-    <Compile Include="src\NNPG2\VertexData.cs" />
-    <Compile Include="src\NNPG2\GraphNNPG2Extension.cs" />
+    <Compile Include="src\NNPG2\DataClasses\EdgeData.cs" />
+    <Compile Include="src\NNPG2\DataClasses\VertexData.cs" />
+    <Compile Include="src\NNPG2\DataStructure\GraphNNPG2Extension.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Vertex.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
