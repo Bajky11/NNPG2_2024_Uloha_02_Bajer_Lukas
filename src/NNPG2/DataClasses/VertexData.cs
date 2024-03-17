@@ -11,7 +11,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
 {
     internal class VertexData
     {
-        private string Name { get; }
+        public string Name;
         // Class Rectangle is not used due to Serialization problems
         // Variables are public becou private are not serialized
         public int RectangleX;
@@ -107,6 +107,15 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             Selected = selected;
         }
 
+        public void SetName(string name)
+        {
+            this.Name = name;
+        }
+
+        public int GetWidth()
+        {
+            return this.RectangleWidth;
+        }
         public bool RectangleContains(Point point)
         {
             return new Rectangle(RectangleX, RectangleY, RectangleWidth, RectangleHeight).Contains(point);
@@ -117,11 +126,20 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             return new Rectangle(MagneticRectangleX, MagneticRectangleY, MagneticRectangleWidth, MagneticRectangleHeight).Contains(point);
         }
 
+        private int GetNamePixelWidth()
+        {
+            return Name.Length * 4;
+        }
+        private int GetNamePixelHeight()
+        {
+            return 6;
+        }
+
         public void Draw(Graphics g)
         {
             g.FillEllipse(Brushes.Black, new Rectangle(RectangleX, RectangleY, RectangleWidth, RectangleHeight));
             //g.DrawEllipse(Pens.Gray, MagneticRectangle);
-            //g.DrawString(Name, new Font("Arial", 10), Brushes.White, RectangleX + RectangleWidth / 2, RectangleY + RectangleHeight / 2);
+            g.DrawString(Name, new Font("Arial", 10), Brushes.White, RectangleX + RectangleWidth / 2 - GetNamePixelWidth(), RectangleY + RectangleHeight / 2 - GetNamePixelHeight());
 
             if (Selected)
             {

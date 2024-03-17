@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -13,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 {
     public partial class Form1 : Form
@@ -28,8 +30,12 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private EdgeNNPG2 edge = null;
         private string mode = "view";
         private Map _Map;
-
+        private int StartPathKey = -1;
+        private int EndPathKey = -1;
         private int keyCounter;
+
+        private int edgeDeleteFirst = -1;
+        private int edgeDeleteSecond = -1;
 
         public Form1()
         {
@@ -41,28 +47,121 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             this.panel1.MouseUp += OnMouseUp;
             this.panel1.KeyPress += OnKeyPress;
 
+
             // Set DoubleBuffering true on panel1
             typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty
              | BindingFlags.Instance | BindingFlags.NonPublic, null,
              panel1, new object[] { true });
-        }
 
-        private void PanelInvalidate()
-        {
-            this.panel1.Invalidate();
+            panel1.Focus();
         }
-
 
         private void OnKeyPress(object sender, KeyPressEventArgs e)
         {
-            Console.WriteLine(e.KeyChar);
             switch (e.KeyChar)
             {
                 case (char)Keys.Escape: Reset(); break;
                 case 'a': AddNewObject(); break;
-                case 's': graph.Save("NNPG2.txt", _Map); break;
+                case 's': Save(); break;
                 case 'd': DeleteObject(); break;
+                case 'e': DeleteEdge(); break;
             }
+        }
+
+        private void Save()
+        {
+            graph.Save("NNPG2.txt", _Map);
+            MessageBox.Show("Saved");
+        }
+
+        private void DeleteEdge()
+        {
+            SetMode("edgeDel");
+        }
+
+        private void SetComboboxes()
+        {
+            comboBox1.Items.Clear();
+            comboBox2.Items.Clear();
+
+            foreach (var kvp in graph)
+            {
+                var vertex = kvp.Value;
+                comboBox1.Items.Add(vertex._Key);
+                comboBox2.Items.Add(vertex._Key);
+            }
+        }
+
+        private void UpdateAllPaths()
+        {
+            bool pathIsComplete = StartPathKey != -1 && EndPathKey != -1;
+            if (pathIsComplete)
+            {
+                Console.WriteLine("path is complete");
+                List<List<int>> allPaths = graph.FindAllPathsBetweenTwoVertexes(StartPathKey, EndPathKey);
+                if (allPaths.Count > 0)
+                {
+                    graph.allPaths = allPaths;
+                    DisplayAllPaths();
+
+                    foreach (List<int> path in allPaths)
+                    {
+                        foreach (int vertexKey in path)
+                        {
+                            Console.Write(vertexKey + " -> ");
+                        }
+                        Console.WriteLine();
+                    }
+                }
+                else
+                {
+                    flowLayoutPanel1.Controls.Clear();
+                    graph.allPaths.Clear();
+                    graph.selectedPath.Clear();
+                }
+
+
+            }
+        }
+
+        private void DisplayAllPaths()
+        {
+            flowLayoutPanel1.Controls.Clear();
+            foreach (List<int> path in graph.allPaths)
+            {
+                System.Windows.Forms.Button pathButton = new System.Windows.Forms.Button();
+                StringBuilder pathText = new StringBuilder();
+
+                for (int i = 0; i < path.Count; i++)
+                {
+                    pathText.Append(path[i]);
+                    if (i < path.Count - 1) pathText.Append(" -> ");
+                }
+
+                pathButton.Text = pathText.ToString();
+                pathButton.Tag = path;
+                pathButton.Click += PathButton_Click;
+                pathButton.BackColor = Color.White;
+                pathButton.Width = flowLayoutPanel1.Width - 5;
+                flowLayoutPanel1.Controls.Add(pathButton);
+            }
+        }
+
+        private void PathButton_Click(object sender, EventArgs e)
+        {
+            System.Windows.Forms.Button clickedButton = sender as System.Windows.Forms.Button;
+            if (clickedButton != null && clickedButton.Tag is List<int> path)
+            {
+                graph.selectedPath = new List<int>(path);
+                Console.WriteLine("Selected Path: " + string.Join(" -> ", graph.selectedPath));
+            }
+            PanelInvalidate();
+        }
+
+
+        private void PanelInvalidate()
+        {
+            this.panel1.Invalidate();
         }
 
         private void DeleteObject()
@@ -72,6 +171,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 graph.RemoveVertex(hoveredObject._Key);
                 hoveredObject = null;
                 PanelInvalidate();
+                SetComboboxes();
             }
         }
 
@@ -109,9 +209,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             lastMousePosition = Point.Empty;
             Point mapInitialCoordinates = graph.Load("NNPG2.txt");
-            _Map = new Map("C:\\Users\\LuBajer\\Documents\\LukasBajer\\Projects\\NNPG2_2024_Uloha_02_Bajer_Lukas\\src\\NNPG2\\Resources\\czechrepublic.png", mapInitialCoordinates.X, mapInitialCoordinates.Y);
+            _Map = new Map("czechrepublic.png", mapInitialCoordinates.X, mapInitialCoordinates.Y);
             keyCounter = graph.GetfirstValidKey();
-
+            SetComboboxes();
+            comboBox1.SelectedIndex = 0;
+            comboBox2.SelectedIndex = 0;
 
         }
 
@@ -124,6 +226,8 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 case MouseButtons.Right: OnMouseUpButtonRight(e); break;
                 case MouseButtons.Left: OnMouseUpButtonLeft(e); break;
             }
+
+            panel1.Focus();
         }
 
         private void OnMouseUpButtonRight(MouseEventArgs e)
@@ -132,7 +236,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             {
                 if (edge == null)
                 {
-
                     // edge is null or start vertex is different - set edge and start vertex
                     edge = new EdgeNNPG2(new VertexNNPG2(hoveredObject._Key, hoveredObject.Data), null, new EdgeData(""));
                 }
@@ -164,6 +267,37 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 graph.AddVertex(newObject);
                 newObject = null;
                 SetMode("view");
+                SetComboboxes();
+            }
+
+            if (mode == "edgeDel")
+            {
+                Console.WriteLine("edgeDel");
+                Console.WriteLine(edgeDeleteFirst);
+                Console.WriteLine(edgeDeleteSecond);
+                if (edgeDeleteFirst == -1)
+                {
+                    Console.WriteLine("Set first");
+                    edgeDeleteFirst = hoveredObject._Key;
+                }
+                else if (edgeDeleteSecond == -1)
+                {
+                    if (hoveredObject._Key != edgeDeleteFirst)
+                    {
+                        Console.WriteLine("Set second");
+                        edgeDeleteSecond = hoveredObject._Key;
+                    }
+                }
+
+                if (edgeDeleteFirst != -1 && edgeDeleteSecond != -1)
+                {
+                    Console.WriteLine("Removed edge");
+                    graph.RemoveEdge(edgeDeleteFirst, edgeDeleteSecond);
+                    edgeDeleteFirst = -1;
+                    edgeDeleteSecond = -1;
+                    SetMode("view");
+                    PanelInvalidate();
+                }
             }
         }
 
@@ -349,6 +483,69 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void splitContainer1_Panel1_Resize(object sender, EventArgs e)
         {
             this.panel1.Size = splitContainer1.Size;
+        }
+
+        private void splitContainer1_Panel2_Resize(object sender, EventArgs e)
+        {
+
+        }
+
+        private void HandleCombobox1Change(string value)
+        {
+            if (value != "")
+            {
+
+                if (int.TryParse(value, out int result))
+                {
+                    StartPathKey = int.Parse(value);
+                    Console.WriteLine(StartPathKey);
+                    UpdateAllPaths();
+                }
+                else
+                {
+                    MessageBox.Show("Hodnota pole Bod A není validní.");
+                    comboBox1.Text = "";
+                }
+            }
+        }
+
+        private void HandleCombobox2Change(string value)
+        {
+            if (value != "")
+            {
+                if (value != "" && int.TryParse(value, out int result))
+                {
+                    EndPathKey = int.Parse(value);
+                    Console.WriteLine(EndPathKey);
+                    UpdateAllPaths();
+                }
+                else
+                {
+                    MessageBox.Show("Hodnota pole Bod B není validní.");
+                    comboBox2.Text = "";
+                }
+            }
+
+        }
+
+        private void comboBox1_TextUpdate(object sender, EventArgs e)
+        {
+            HandleCombobox1Change(comboBox1.Text);
+        }
+
+        private void comboBox2_TextUpdate(object sender, EventArgs e)
+        {
+            HandleCombobox2Change(comboBox2.Text);
+        }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HandleCombobox1Change(comboBox1.Items[comboBox1.SelectedIndex].ToString());
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            HandleCombobox2Change(comboBox2.Items[comboBox2.SelectedIndex].ToString());
         }
     }
 }

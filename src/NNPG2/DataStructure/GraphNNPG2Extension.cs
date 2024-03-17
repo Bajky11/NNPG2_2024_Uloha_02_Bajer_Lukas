@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -17,8 +18,12 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
     internal class GraphNNPG2Extension : GraphRailwayExtension<int, VertexData, EdgeData>
     {
 
+        public List<List<int>> allPaths = new List<List<int>>();
+        public List<int> selectedPath = new List<int>();
+
         public void AddVertex(VertexNNPG2 vertex)
         {
+            vertex.Data.SetName(vertex._Key.ToString());
             base.AddVertex(vertex._Key, vertex.Data);
         }
 
@@ -35,7 +40,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             {
                 keys.Add(kvp.Value._Key);
             }
-            if(keys.Count() == 0)
+            if (keys.Count() == 0)
             {
                 return 1;
             }
@@ -78,21 +83,73 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
 
         public void Draw(Graphics g)
         {
+            Pen pen = new Pen(Color.Black, 3);
+            int counter = 0;
+
             foreach (var kvp in this)
             {
-                //Console.WriteLine($"Vertex Key: {kvp.Key}, Vertex Data: {kvp.Value.Data}");
-                kvp.Value.Data.Draw(g);
+                var vertexData = kvp.Value.Data;
 
                 foreach (var edge in kvp.Value.Edges)
                 {
-                    //Console.WriteLine($"  Edge to {edge.EndVertex._Key}, Edge Data: {edge.Data}");
-                    g.DrawLine(
-                   new Pen(Color.Black, 3),
-                   new Point(edge.StartVertex.Data.GetCenterX(), edge.StartVertex.Data.GetCenterY()),
-                   new Point(edge.EndVertex.Data.GetCenterX(), edge.EndVertex.Data.GetCenterY())
-                   );
+                    var startVertex = edge.StartVertex;
+                    var endVertex = edge.EndVertex;
+                    var startVertexData = startVertex.Data;
+                    var endVertexData = endVertex.Data;
+                    int halfVertexSize = edge.EndVertex.Data.GetWidth() / 2;
+                    int directionPointSize = 10;
+
+                    Point start = new Point(startVertexData.GetCenterX(), startVertexData.GetCenterY());
+                    Point end = new Point(endVertexData.GetCenterX(), endVertexData.GetCenterY());
+                    Point directionPoint = CalculateRectangleStartPoint(start, end, halfVertexSize + directionPointSize / 2);
+                    Point centerDirectionPoint = new Point(directionPoint.X - directionPointSize / 2, directionPoint.Y - directionPointSize / 2);
+
+                    if (selectedPath.Count > 0 && AreAdjacent(startVertex._Key, endVertex._Key))
+                    {
+                        pen = new Pen(Color.Blue, 5);
+                    }
+                    else
+                    {
+                        pen = new Pen(Color.Black, 3);
+                    }
+
+                    g.DrawLine(pen, start, directionPoint);
+
+
+                    g.FillEllipse(Brushes.Red, centerDirectionPoint.X, centerDirectionPoint.Y, directionPointSize, directionPointSize);
                 }
+                
+                
+                vertexData.Draw(g);
+                counter++;
             }
+        }
+
+        public bool AreAdjacent( int start, int end)
+        {
+            int startIndex = this.selectedPath.IndexOf(start);
+            int endIndex = this.selectedPath.IndexOf(end);
+
+            if (startIndex == -1 || endIndex == -1)
+                return false;
+
+            return Math.Abs(startIndex - endIndex) == 1;
+        }
+
+
+
+        private Point CalculateRectangleStartPoint(Point start, Point end, int distance)
+        {
+            float lineLength = (float)Math.Sqrt(Math.Pow(end.X - start.X, 2) + Math.Pow(end.Y - start.Y, 2));
+
+            if (lineLength == 0) return end;
+
+            float ratio = distance / lineLength;
+
+            int directionPointX = (int)(end.X + ratio * (start.X - end.X));
+            int directionPointY = (int)(end.Y + ratio * (start.Y - end.Y));
+
+            return new Point(directionPointX, directionPointY);
         }
     }
 }

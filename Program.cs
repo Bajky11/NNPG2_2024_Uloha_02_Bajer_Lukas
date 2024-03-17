@@ -40,41 +40,51 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         [STAThread]
         static void Main()
         {
-            /*
+            
             // Create an instance of GraphExtension
-            GraphRailwayExtension<int, string, string> graphExtension = new GraphRailwayExtension<int, string, string>();
-            //graphExtension.Load("GraphSaveTest.txt");
+            GraphRailwayExtension<int, string, string> graph = new GraphRailwayExtension<int, string, string>();
 
-            // Add vertices and edges
-            graphExtension.AddVertex(1, "Vertex 1");
-            graphExtension.AddVertex(2, "Vertex 2");
-            graphExtension.AddEdge(1, 2, "1 - 2");
+            foreach(int vertex in vertices)
+            {
+                graph.AddVertex(vertex, "V");
+            }
 
-            // Find all paths between start and end vertices
-            int[] startVertices = { 1 };
-            int[] endVertices = { 3 };
-            var allPaths = graphExtension.FindAllPathsBetweenStartAndEndVertexes(startVertices, endVertices);
+            for (int i = 0; i < edges.GetLength(0); i++)
+            {
+                graph.AddEdge(edges[i, 0], edges[i, 1], "E");
+            }
+
+            var allPaths = graph.FindAllPathsBetweenStartAndEndVertexes(startVertices, endVertices);
+
+            Console.WriteLine(graph.ToString());
+            Console.WriteLine();
 
             // Print all paths
             foreach (var path in allPaths)
-            {
-                Console.WriteLine("Path:");
+            {   
                 foreach (var vertexKey in path)
                 {
-                    Console.WriteLine(vertexKey);
+                    Console.Write(vertexKey + " -> ");
                 }
+                Console.WriteLine();
             }
 
-            Console.WriteLine(graphExtension.ToString());
-            graphExtension.Save("GraphSaveTest.txt");
+            Console.WriteLine();
+            var paths = graph.FindAllPathsBetweenTwoVertexes(16, 19);
+            foreach (var path in paths)
+            {
+                foreach (var vertexKey in path)
+                {
+                    Console.Write(vertexKey + " -> ");
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Paths found: " + allPaths.Count);
 
             
-            Console.WriteLine();
 
-            GraphRailwayExtension<int, string, string> graph = new GraphRailwayExtension<int, string, string>();
-            graph.Load("GraphSaveTest.txt");
-            Console.WriteLine(graph.ToString());
-            */
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
