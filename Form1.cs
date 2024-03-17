@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -34,31 +35,21 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         {
             InitializeComponent();
             this.DoubleBuffered = true;
-            this.MouseMove += OnMouseMove;
-            this.Paint += OnPaint;
-            this.MouseDown += OnMouseDown;
-            this.MouseUp += OnMouseUp;
-            this.KeyPress += OnKeyPress;
+            this.panel1.MouseMove += OnMouseMove;
+            this.panel1.Paint += OnPaint;
+            this.panel1.MouseDown += OnMouseDown;
+            this.panel1.MouseUp += OnMouseUp;
+            this.panel1.KeyPress += OnKeyPress;
 
-            
+            // Set DoubleBuffering true on panel1
+            typeof(Panel).InvokeMember("DoubleBuffered", BindingFlags.SetProperty
+             | BindingFlags.Instance | BindingFlags.NonPublic, null,
+             panel1, new object[] { true });
+        }
 
-            // Create a new button
-            Button myButton = new Button();
-
-            // Set button properties
-            myButton.Text = "Click Me";
-            myButton.Size = new Size(100, 50); // Set the size as needed
-            myButton.Location = new Point(10, 10); // Set the location as needed
-
-            // Add click event handler for the button
-            myButton.Click += (sender, e) =>
-            {
-                MessageBox.Show("Button Clicked!");
-            };
-
-            //Add the button to the form
-            //this.Controls.Add(myButton);
-
+        private void PanelInvalidate()
+        {
+            this.panel1.Invalidate();
         }
 
 
@@ -80,7 +71,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             {
                 graph.RemoveVertex(hoveredObject._Key);
                 hoveredObject = null;
-                this.Invalidate();
+                PanelInvalidate();
             }
         }
 
@@ -104,14 +95,14 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void ResetEdgeCreation()
         {
             edge = null;
-            this.Invalidate();
+            PanelInvalidate();
         }
 
         private void ResetAddNewObject()
         {
             mode = "view";
             newObject = null;
-            this.Invalidate();
+            PanelInvalidate();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -162,7 +153,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             {
                 graph.AddEdge(edge.StartVertex._Key, edge.EndVertex._Key, new EdgeData("edge from" + edge.StartVertex._Key + " to " + edge.EndVertex._Key));
                 this.edge = null;
-                this.Invalidate();
+                PanelInvalidate();
             }
         }
 
@@ -240,14 +231,14 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                             // vertex je null - nastva hover object
                             hoveredObject = new VertexNNPG2(vertex._Key, vertexData);
                             hoveredObject.Data.SetHovered(true);
-                            this.Invalidate();
+                            PanelInvalidate();
                             break;
                         }
                         else if (hoveredObject.Data != vertexData)
                         {
                             // vertex je jiný než hover object - přenastav hover objekt
                             hoveredObject.Data.SetHovered(true);
-                            this.Invalidate();
+                            PanelInvalidate();
                             break;
                         }
                         else
@@ -264,7 +255,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                         {
                             // vertex je null - nastav magnetic object
                             magneticObject = new VertexNNPG2(vertex._Key, vertexData);
-                            this.Invalidate();
+                            PanelInvalidate();
                             break;
 
                         }
@@ -272,7 +263,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                         {
                             // vertex je jiný než magnetic object - přenastav magnetic objekt
                             magneticObject = new VertexNNPG2(vertex._Key, vertexData);
-                            this.Invalidate();
+                            PanelInvalidate();
                             break;
                         }
                         else
@@ -289,26 +280,26 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 {
                     //Console.WriteLine("Err");
                     magneticObject = null;
-                    this.Invalidate();
+                    PanelInvalidate();
                 }
 
                 if (!foundRectangle && hoveredObject != null)
                 {
                     hoveredObject.Data.SetHovered(false);
                     hoveredObject = null;
-                    this.Invalidate();
+                    PanelInvalidate();
                 }
             }
 
             if (mode == "add")
             {
                 newObject.Data.SetRectXY(mousePosition.X, mousePosition.Y);
-                this.Invalidate();
+                PanelInvalidate();
             }
 
             if (edge != null && edge.StartVertex != null)
             {
-                this.Invalidate();
+                PanelInvalidate();
             }
         }
 
@@ -320,7 +311,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 case MouseButtons.Middle: OnDragButtonMiddle(e); break;
                 case MouseButtons.Right: OnDragButtonRight(e); break;
             }
-            this.Invalidate();
+            PanelInvalidate();
         }
 
         private void OnDragButtonLeft(MouseEventArgs e)
@@ -353,6 +344,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
         private void OnDragButtonRight(MouseEventArgs e)
         {
 
+        }
+
+        private void splitContainer1_Panel1_Resize(object sender, EventArgs e)
+        {
+            this.panel1.Size = splitContainer1.Size;
         }
     }
 }
