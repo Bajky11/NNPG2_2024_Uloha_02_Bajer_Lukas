@@ -19,7 +19,7 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 {
     public partial class Form1 : Form
     {
-        private GraphNNPG2Extension graph = new GraphNNPG2Extension();
+        private GraphNNPG2Extension graph = new GraphNNPG2Extension("");
         private List<EdgeData> edges = new List<EdgeData>();
         private bool isDragging = false;
         private Point lastMousePosition;
@@ -97,21 +97,11 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
             bool pathIsComplete = StartPathKey != -1 && EndPathKey != -1;
             if (pathIsComplete)
             {
-                Console.WriteLine("path is complete");
-                List<List<int>> allPaths = graph.FindAllPathsBetweenTwoVertexes(StartPathKey, EndPathKey);
+                List<List<int>> allPaths = graph.FindAllPathsBetweenTwoVertexes(StartPathKey, EndPathKey, new List<List<int>> { });
                 if (allPaths.Count > 0)
                 {
                     graph.allPaths = allPaths;
                     DisplayAllPaths();
-
-                    foreach (List<int> path in allPaths)
-                    {
-                        foreach (int vertexKey in path)
-                        {
-                            Console.Write(vertexKey + " -> ");
-                        }
-                        Console.WriteLine();
-                    }
                 }
                 else
                 {
@@ -252,11 +242,52 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 }
             }
 
+            // Quest from teacher - todo smart adding (when click right into empty space, vertex is added and edge adding is intialized. When click right nerby existing vertex vertex is used for edge adding)
+
+            SmartVertexAdding(e);
+
             if (edge != null && edge.IsComplete())
             {
                 graph.AddEdge(edge.StartVertex._Key, edge.EndVertex._Key, new EdgeData("edge from" + edge.StartVertex._Key + " to " + edge.EndVertex._Key));
                 this.edge = null;
                 PanelInvalidate();
+            }
+
+
+        }
+
+
+
+        private void SmartVertexAdding(MouseEventArgs e)
+        {
+            if (hoveredObject == null && magneticObject == null)
+            {
+                if (edge == null)
+                {
+                    int newKey = keyCounter++;
+                    var newVertex = new VertexNNPG2(newKey, new VertexData(newKey.ToString(), e.X, e.Y));
+                    graph.AddVertex(newVertex);
+                    edge = new EdgeNNPG2(newVertex, null, new EdgeData(""));
+                }
+                else
+                {
+                    int newKey = keyCounter++;
+                    var newVertex = new VertexNNPG2(newKey, new VertexData(newKey.ToString(), e.X, e.Y));
+                    graph.AddVertex(newVertex);
+                    edge.EndVertex = newVertex;
+                    graph.AddEdge(edge.StartVertex._Key, edge.EndVertex._Key, new EdgeData("edge from" + edge.StartVertex._Key + " to " + edge.EndVertex._Key));
+                    this.edge = null;
+                    edge = new EdgeNNPG2(newVertex, null, new EdgeData(""));
+                    PanelInvalidate();
+                }
+                return;
+            }
+            
+            if (magneticObject != null && edge == null)
+            {
+                var clickedMagneticObject = magneticObject;
+                edge = new EdgeNNPG2(clickedMagneticObject, null, new EdgeData(""));
+                return;
             }
         }
 
@@ -272,26 +303,20 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
 
             if (mode == "edgeDel")
             {
-                Console.WriteLine("edgeDel");
-                Console.WriteLine(edgeDeleteFirst);
-                Console.WriteLine(edgeDeleteSecond);
                 if (edgeDeleteFirst == -1)
                 {
-                    Console.WriteLine("Set first");
                     edgeDeleteFirst = hoveredObject._Key;
                 }
                 else if (edgeDeleteSecond == -1)
                 {
                     if (hoveredObject._Key != edgeDeleteFirst)
                     {
-                        Console.WriteLine("Set second");
                         edgeDeleteSecond = hoveredObject._Key;
                     }
                 }
 
                 if (edgeDeleteFirst != -1 && edgeDeleteSecond != -1)
                 {
-                    Console.WriteLine("Removed edge");
                     graph.RemoveEdge(edgeDeleteFirst, edgeDeleteSecond);
                     edgeDeleteFirst = -1;
                     edgeDeleteSecond = -1;
@@ -498,7 +523,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 if (int.TryParse(value, out int result))
                 {
                     StartPathKey = int.Parse(value);
-                    Console.WriteLine(StartPathKey);
                     UpdateAllPaths();
                 }
                 else
@@ -516,7 +540,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas
                 if (value != "" && int.TryParse(value, out int result))
                 {
                     EndPathKey = int.Parse(value);
-                    Console.WriteLine(EndPathKey);
                     UpdateAllPaths();
                 }
                 else

@@ -21,6 +21,10 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
         public List<List<int>> allPaths = new List<List<int>>();
         public List<int> selectedPath = new List<int>();
 
+        public GraphNNPG2Extension(string filePath) : base(filePath)
+        {
+        }
+
         public void AddVertex(VertexNNPG2 vertex)
         {
             vertex.Data.SetName(vertex._Key.ToString());

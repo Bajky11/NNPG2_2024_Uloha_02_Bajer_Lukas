@@ -30,6 +30,8 @@
         {
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.label1 = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label2 = new System.Windows.Forms.Label();
@@ -37,23 +39,20 @@
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.label4 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
@@ -62,6 +61,7 @@
             this.splitContainer3.Panel1.SuspendLayout();
             this.splitContainer3.Panel2.SuspendLayout();
             this.splitContainer3.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -93,6 +93,45 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1317, 879);
             this.panel1.TabIndex = 0;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.panel2);
+            this.splitContainer2.Size = new System.Drawing.Size(247, 882);
+            this.splitContainer2.SplitterDistance = 702;
+            this.splitContainer2.TabIndex = 0;
+            // 
+            // splitContainer3
+            // 
+            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer3.Panel1
+            // 
+            this.splitContainer3.Panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.splitContainer3.Panel1.Controls.Add(this.label1);
+            this.splitContainer3.Panel1.Controls.Add(this.tableLayoutPanel2);
+            // 
+            // splitContainer3.Panel2
+            // 
+            this.splitContainer3.Panel2.Controls.Add(this.flowLayoutPanel1);
+            this.splitContainer3.Size = new System.Drawing.Size(247, 702);
+            this.splitContainer3.SplitterDistance = 124;
+            this.splitContainer3.TabIndex = 0;
             // 
             // label1
             // 
@@ -168,54 +207,6 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(247, 574);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
-            // splitContainer2
-            // 
-            this.splitContainer2.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.panel2);
-            this.splitContainer2.Size = new System.Drawing.Size(247, 882);
-            this.splitContainer2.SplitterDistance = 702;
-            this.splitContainer2.TabIndex = 0;
-            // 
-            // splitContainer3
-            // 
-            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer3.Name = "splitContainer3";
-            this.splitContainer3.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer3.Panel1
-            // 
-            this.splitContainer3.Panel1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.splitContainer3.Panel1.Controls.Add(this.label1);
-            this.splitContainer3.Panel1.Controls.Add(this.tableLayoutPanel2);
-            // 
-            // splitContainer3.Panel2
-            // 
-            this.splitContainer3.Panel2.Controls.Add(this.flowLayoutPanel1);
-            this.splitContainer3.Size = new System.Drawing.Size(247, 702);
-            this.splitContainer3.SplitterDistance = 124;
-            this.splitContainer3.TabIndex = 0;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(9, 36);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(149, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Přidání objektu: A + Left Click";
-            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.Control;
@@ -234,50 +225,14 @@
             this.panel2.Size = new System.Drawing.Size(247, 176);
             this.panel2.TabIndex = 0;
             // 
-            // label5
+            // label11
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 86);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(74, 13);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Přidání hrany:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 99);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(210, 13);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Right Click na počáteční a koncový objekt";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(9, 49);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(232, 13);
-            this.label7.TabIndex = 3;
-            this.label7.Text = "Pohyb objektem: Tažením Levého tlačítka myši";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(9, 62);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(206, 13);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "Odebrání objektu: Hover na objektem + D";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(9, 9);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(177, 13);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "Pohyb mapy: Tažením kolečka myši";
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(9, 134);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(211, 13);
+            this.label11.TabIndex = 7;
+            this.label11.Text = "E + Left Click na počáteční a koncový bod";
             // 
             // label10
             // 
@@ -288,15 +243,6 @@
             this.label10.TabIndex = 6;
             this.label10.Text = "Uložení: S";
             // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(9, 134);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(211, 13);
-            this.label11.TabIndex = 7;
-            this.label11.Text = "E + Left Click na počáteční a koncový bod";
-            // 
             // label12
             // 
             this.label12.AutoSize = true;
@@ -305,6 +251,60 @@
             this.label12.Size = new System.Drawing.Size(81, 13);
             this.label12.TabIndex = 8;
             this.label12.Text = "Odebrání hrany";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(9, 9);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(177, 13);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "Pohyb mapy: Tažením kolečka myši";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(9, 62);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(206, 13);
+            this.label8.TabIndex = 4;
+            this.label8.Text = "Odebrání objektu: Hover na objektem + D";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(9, 49);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(232, 13);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "Pohyb objektem: Tažením Levého tlačítka myši";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(9, 99);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(210, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Right Click na počáteční a koncový objekt";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 86);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(74, 13);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Přidání hrany:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(9, 36);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(149, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Přidání objektu: A + Left Click";
             // 
             // Form1
             // 
@@ -319,8 +319,6 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
             this.splitContainer2.Panel1.ResumeLayout(false);
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
@@ -330,6 +328,8 @@
             this.splitContainer3.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer3)).EndInit();
             this.splitContainer3.ResumeLayout(false);
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.ResumeLayout(false);

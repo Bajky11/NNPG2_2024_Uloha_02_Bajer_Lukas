@@ -41,7 +41,6 @@ namespace NNPG2_2024_Uloha_02_Bajer_Lukas.src
             var vertexToRemove = adjencyList[key];
             adjencyList.Remove(key);
 
-            // Remove this vertex from the neighbors of other vertices and remove the corresponding edges
             foreach (var vertex in adjencyList.Values)
             {
                 if (vertex.Neighbors.Contains(vertexToRemove))

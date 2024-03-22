@@ -60,6 +60,7 @@
     <Compile Include="src\NNPG2\DataStructure\EdgeNNPG2.cs" />
     <Compile Include="src\NNPG2\DataClasses\Map.cs" />
     <Compile Include="src\NNPG2\DataStructure\VertexNNPG2.cs" />
+    <Compile Include="src\SEMA\Data.cs" />
     <Compile Include="src\SEMA\GraphRailwayExtension.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Edge.cs" />
     <Compile Include="src\DataStucture\GenericGraph\Graph.cs" />
